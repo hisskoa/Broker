@@ -14,26 +14,21 @@ class Broker:
         producer(self.broker, topic, message)    
                     
     def consume(self, topic): 
-        if topic not in self.broker:
-            return "Очередь для этого пользователя не существует!"
-        
         return consumer(self.broker, topic)
         
 broker = Broker()
 
 while(True):
-        
-    topic = int(input("Введите ID пользователя: \n"))
     
-    choice = input("1 - consume 2 - produce \n")
+    userInput = input("1 - consume/2 - produce, Email/Phone number, Value: \n")
+    
+    choice, topic, *message = userInput.split()
+    message = message[0] if message else None
        
     if choice == "1":
         print(broker.consume(topic))
         
-    elif choice == "2":
-        
-        message = input("Email \n")
-        
+    elif choice == "2":       
         broker.put(topic, message)
 
 
