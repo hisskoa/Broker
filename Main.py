@@ -2,21 +2,38 @@ import queue
 from Producer import producer
 from Consumer import consumer
 
-broker = {}
+class Broker:
 
-userId = [0, 1, 2];
-phoneNumber = ['8920', '112', '+7920']
-email = ['geg@gmail.com', 'help@yandex.ru', 'i.ivanov@mail.ru']
+    def __init__(self):
+        self.broker = {}
+        
+    def put(self, topic, message):
+        if topic not in self.broker:
+            self.broker[topic] = queue.Queue()
+            
+        producer(self.broker, topic, message)    
+                    
+    def consume(self, topic): 
+        if topic not in self.broker:
+            return "Очередь для этого пользователя не существует!"
+        
+        return consumer(self.broker, topic)
+        
+broker = Broker()
 
-for i in range(len(userId)):
-    if userId[i] not in broker:
-        broker[userId[i]] = queue.Queue()
-
-for i in range(len(userId)): 
-    print('Пользователь №', userId[i], ':')
-    producer(broker, userId[i], phoneNumber[i])
-    producer(broker, userId[i], email[i])
-    print(consumer(broker, userId[i]))
-    print(consumer(broker, userId[i]), '\n')
+while(True):
+        
+    topic = int(input("Введите ID пользователя: \n"))
+    
+    choice = input("1 - consume 2 - produce \n")
+       
+    if choice == "1":
+        print(broker.consume(topic))
+        
+    elif choice == "2":
+        
+        message = input("Email \n")
+        
+        broker.put(topic, message)
 
 
